@@ -1,4 +1,4 @@
-package com.learning.ecommerce.product.application;
+package com.learning.ecommerce.product.application.port;
 
 import com.learning.ecommerce.product.domain.model.Product;
 

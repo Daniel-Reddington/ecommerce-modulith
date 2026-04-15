@@ -1,5 +1,7 @@
 package com.learning.ecommerce.product.application;
 
+import com.learning.ecommerce.product.application.port.ProductRepository;
+import com.learning.ecommerce.product.application.usecase.CreateProductUseCase;
 import com.learning.ecommerce.product.domain.model.Product;
 import org.junit.jupiter.api.Test;
 
