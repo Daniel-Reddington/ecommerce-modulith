@@ -7,6 +7,7 @@ import com.learning.ecommerce.product.domain.model.Product;
 import com.learning.ecommerce.product.presentation.dto.CreateProductRequest;
 import com.learning.ecommerce.product.presentation.dto.ProductResponse;
 import com.learning.ecommerce.product.presentation.mapper.ProductMapper;
+import com.learning.ecommerce.shared.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,21 +28,22 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductResponse create(@Valid @RequestBody CreateProductRequest request){
+    public ApiResponse<ProductResponse> create(@Valid @RequestBody CreateProductRequest request){
         Product product = useCase.execute(request.name(), request.price());
-        return mapper.toResponse(product);
+        return ApiResponse.created(mapper.toResponse(product));
     }
 
     @GetMapping
-    public List<ProductResponse> getAll(){
-        return getAllProductsUseCase.execute().stream()
+    public ApiResponse<List<ProductResponse>> getAll(){
+        List<ProductResponse> products = getAllProductsUseCase.execute().stream()
                 .map(mapper::toResponse)
                 .toList();
+        return ApiResponse.ok(products);
     }
 
     @GetMapping("{/id}")
-     public ProductResponse getById(@PathVariable UUID id){
+     public ApiResponse<ProductResponse> getById(@PathVariable UUID id){
         Product product = getProductUseCase.execute(id);
-        return new ProductResponse(product.id().value(), product.name(), product.price());
+        return ApiResponse.ok(mapper.toResponse(product));
      }
 }
