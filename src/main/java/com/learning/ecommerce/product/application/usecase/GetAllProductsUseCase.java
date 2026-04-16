@@ -4,13 +4,15 @@ import com.learning.ecommerce.product.application.port.ProductRepository;
 import com.learning.ecommerce.product.domain.model.Product;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
-public class CreateProductUseCase {
+public class GetAllProductsUseCase {
 
-    private final ProductRepository repository;
+    private final ProductRepository productRepository;
 
-    public Product execute(String name, double price) {
-        Product product = Product.create(name, price);
-        return repository.save(product);
+    public List<Product> execute() {
+        return productRepository.findAll();
     }
+
 }
