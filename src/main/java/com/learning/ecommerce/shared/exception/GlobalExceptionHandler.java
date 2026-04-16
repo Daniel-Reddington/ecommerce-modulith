@@ -1,5 +1,7 @@
 package com.learning.ecommerce.shared.exception;
 
+import com.learning.ecommerce.product.domain.exception.InvalidProductNameException;
+import com.learning.ecommerce.product.domain.exception.InvalidProductPriceException;
 import com.learning.ecommerce.product.domain.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,19 +26,32 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({
+            InvalidProductNameException.class,
+            InvalidProductPriceException.class
+    })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidation(MethodArgumentNotValidException exception) {
+    public ErrorResponse handleDomainValidation(RuntimeException exception) {
         return new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 ApiErrorCode.VALIDATION_ERROR.name(),
-                exception.getBindingResult()
-                        .getFieldErrors()
-                        .stream()
-                        .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                        .findFirst()
-                        .orElse("Validation error")
+                exception.getMessage()
+        );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBeanValidation(MethodArgumentNotValidException exception) {
+        List<String> error = exception.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .toList();
+
+        return new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                ApiErrorCode.VALIDATION_ERROR.name(),
+                String.join(", ", error)
         );
     }
 

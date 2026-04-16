@@ -1,5 +1,8 @@
 package com.learning.ecommerce.product.domain.model;
 
+import com.learning.ecommerce.product.domain.exception.InvalidProductNameException;
+import com.learning.ecommerce.product.domain.exception.InvalidProductPriceException;
+
 import java.math.BigDecimal;
 
 public class Product {
@@ -17,11 +20,11 @@ public class Product {
 
     public static Product create(String name, Double price) {
         if(name == null || name.isBlank()) {
-            throw new IllegalArgumentException("name cannot empty");
+            throw InvalidProductNameException.empty();
         }
 
         if(price == null || price <= 0) {
-            throw new IllegalArgumentException("price must be > 0");
+            throw InvalidProductPriceException.invalid();
         }
 
         return new Product(ProductId.generate(), name, price);

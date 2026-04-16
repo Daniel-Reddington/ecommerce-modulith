@@ -8,6 +8,10 @@ import com.learning.ecommerce.product.infrastructure.persistence.SpringDataProdu
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class ProductRepositoryAdapter implements ProductRepository {
@@ -29,6 +33,16 @@ public class ProductRepositoryAdapter implements ProductRepository {
                 saved.getName(),
                 saved.getPrice()
         );
+    }
+
+    @Override
+    public Optional<Product> findById(UUID id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Product> findAll() {
+        return List.of();
     }
 
 }
