@@ -3,6 +3,7 @@ package com.learning.ecommerce.product.presentation;
 import com.learning.ecommerce.product.application.usecase.CreateProductUseCase;
 import com.learning.ecommerce.product.application.usecase.GetAllProductsUseCase;
 import com.learning.ecommerce.product.application.usecase.GetProductUseCase;
+import com.learning.ecommerce.product.domain.exception.ProductNotFoundException;
 import com.learning.ecommerce.product.domain.model.Product;
 import com.learning.ecommerce.product.presentation.dto.ProductResponse;
 import com.learning.ecommerce.product.presentation.mapper.ProductMapper;
@@ -114,6 +115,36 @@ public class ProductControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.name").value("Laptop"))
                 .andExpect(jsonPath("$.data.price").value(1000.0));
+    }
+
+    @Test
+    void should_return_404_when_product_not_found() throws Exception {
+        UUID id = UUID.randomUUID();
+
+        when(getProductUseCase.execute(id)).thenThrow(new ProductNotFoundException(id));
+
+        mockMvc.perform(get("/products/{id}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error").value("PRODUCT_NOT_FOUND"))
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    void should_return_400_when_request_invalid() throws Exception {
+        String requestBody = """
+                {
+                    "name": "",
+                    "price": -100
+                }
+                """;
+
+        mockMvc.perform(
+                post("/products")
+                        .contentType(APPLICATION_JSON)
+                        .content(requestBody)
+        ).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.message").exists());
     }
 
 }
