@@ -44,4 +44,22 @@ public class GetAllProductUseCaseTest {
         assertTrue(results.isEmpty());
         verify(repository).findAll(0,10);
     }
+
+    @Test
+    void should_filter_product_by_name(){
+        ProductRepository repository = mock(ProductRepository.class);
+        GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
+
+        List<Product> products = List.of(
+                Product.create("Laptop", 1000.0)
+        );
+
+        when(repository.search(0,10, "Lap", 400.0, 1100.0)).thenReturn(products);
+
+        List<Product> results = useCase.execute(0,10, "Lap", 400.0, 1100.0);
+
+        assertEquals(1, results.size());
+        assertEquals("Laptop", results.getFirst().name());
+        verify(repository).search(0,10, "Lap", 400.0, 1100.0);
+    }
 }

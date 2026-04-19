@@ -15,4 +15,8 @@ public class GetAllProductsUseCase {
         return productRepository.findAll(page, size);
     }
 
+    public List<Product> execute(int page, int size, String name, Double minPrice, Double maxPrice) {
+        return productRepository.search(page, size, name, minPrice, maxPrice);
+    }
+
 }

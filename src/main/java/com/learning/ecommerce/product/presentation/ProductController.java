@@ -36,9 +36,14 @@ public class ProductController {
     @GetMapping
     public ApiResponse<List<ProductResponse>> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice
     ){
-        List<ProductResponse> products = getAllProductsUseCase.execute(page, size).stream()
+        List<ProductResponse> products = getAllProductsUseCase
+                .execute(page, size, name, minPrice, maxPrice)
+                .stream()
                 .map(mapper::toResponse)
                 .toList();
         return ApiResponse.ok(products);

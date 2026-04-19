@@ -149,4 +149,33 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.message").exists());
     }
 
+    @Test
+    void should_filter_product_by_name() throws Exception {
+        List<Product> products = List.of(
+                Product.create("Laptop", 1000.0)
+        );
+
+        when(getAllProductsUseCase.execute(0,10, "Lap", null, null)).thenReturn(products);
+
+        when(productMapper.toResponse(any(Product.class))).thenAnswer(invocation -> {
+            Product product = invocation.getArgument(0);
+            return new ProductResponse(
+                    product.id().value(),
+                    product.name(),
+                    product.price()
+            );
+        });
+
+        mockMvc.perform(
+                get("/products")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("name", "Lap")
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].name").value("Laptop"))
+                .andExpect(jsonPath("$.data[0].price").value(1000.0));
+
+    }
+
 }

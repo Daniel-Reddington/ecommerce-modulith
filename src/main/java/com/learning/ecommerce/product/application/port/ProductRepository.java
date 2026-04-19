@@ -11,6 +11,7 @@ public interface ProductRepository {
 
     Optional<Product> findById(UUID id);
 
-    List<Product> findAll(int page, int size);
+    List<Product> search(int page, int size, String name, Double minPrice, Double maxPrice);
 
+    List<Product> findAll(int page, int size);
 }
