@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 public class GetProductUseCaseTest {
 
     @Test
-    public void should_return_product_when_found(){
+     void should_return_product_when_found(){
 
         ProductRepository repository = mock(ProductRepository.class);
 
@@ -38,7 +38,7 @@ public class GetProductUseCaseTest {
 
 
     @Test
-    public void should_throw_exception_when_product_not_found(){
+     void should_throw_exception_when_product_not_found(){
         ProductRepository repository = mock(ProductRepository.class);
 
         GetProductUseCase useCase = new GetProductUseCase(repository);

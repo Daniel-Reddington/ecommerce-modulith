@@ -12,7 +12,7 @@ import static org.mockito.Mockito.*;
 public class GetAllProductUseCaseTest {
 
     @Test
-    public void should_return_all_products(){
+     void should_return_all_products(){
         ProductRepository repository = mock(ProductRepository.class);
 
         GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
@@ -33,7 +33,7 @@ public class GetAllProductUseCaseTest {
     }
 
     @Test
-    public void should_return_empty_list_when_no_products(){
+     void should_return_empty_list_when_no_products(){
         ProductRepository repository = mock(ProductRepository.class);
         GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
 

@@ -41,7 +41,7 @@ public class ProductController {
         return ApiResponse.ok(products);
     }
 
-    @GetMapping("{/id}")
+    @GetMapping("/{id}")
      public ApiResponse<ProductResponse> getById(@PathVariable UUID id){
         Product product = getProductUseCase.execute(id);
         return ApiResponse.ok(mapper.toResponse(product));
