@@ -11,8 +11,8 @@ public class GetAllProductsUseCase {
 
     private final ProductRepository productRepository;
 
-    public List<Product> execute() {
-        return productRepository.findAll();
+    public List<Product> execute(int page, int size) {
+        return productRepository.findAll(page, size);
     }
 
 }

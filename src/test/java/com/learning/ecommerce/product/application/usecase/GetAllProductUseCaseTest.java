@@ -12,7 +12,7 @@ import static org.mockito.Mockito.*;
 public class GetAllProductUseCaseTest {
 
     @Test
-     void should_return_all_products(){
+     void should_get_products_with_pagination(){
         ProductRepository repository = mock(ProductRepository.class);
 
         GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
@@ -22,14 +22,14 @@ public class GetAllProductUseCaseTest {
                 Product.create("Samsung Galaxy", 2000D)
         );
 
-        when(repository.findAll()).thenReturn(products);
+        when(repository.findAll(0,10)).thenReturn(products);
 
-        List<Product> results = useCase.execute();
+        List<Product> results = useCase.execute(0,10);
 
         assertEquals(2, results.size());
         assertEquals("Laptop", results.getFirst().name());
 
-        verify(repository).findAll();
+        verify(repository).findAll(0,10);
     }
 
     @Test
@@ -37,11 +37,11 @@ public class GetAllProductUseCaseTest {
         ProductRepository repository = mock(ProductRepository.class);
         GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
 
-        when(repository.findAll()).thenReturn(List.of());
+        when(repository.findAll(0,10)).thenReturn(List.of());
 
-        List<Product> results = useCase.execute();
+        List<Product> results = useCase.execute(0,10);
 
         assertTrue(results.isEmpty());
-        verify(repository).findAll();
+        verify(repository).findAll(0,10);
     }
 }

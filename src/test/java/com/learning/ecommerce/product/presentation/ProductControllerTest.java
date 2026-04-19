@@ -77,7 +77,7 @@ public class ProductControllerTest {
                 Product.create("Phone", 500.0)
         );
 
-        when(getAllProductsUseCase.execute()).thenReturn(products);
+        when(getAllProductsUseCase.execute(0,10)).thenReturn(products);
         when(productMapper.toResponse(any(Product.class))).thenAnswer(invocation -> {
             Product product = invocation.getArgument(0);
             return new ProductResponse(
@@ -87,7 +87,9 @@ public class ProductControllerTest {
             );
         });
 
-        mockMvc.perform(get("/products"))
+        mockMvc.perform(get("/products")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.length()").value(2))
                 .andExpect(jsonPath("$.data[0].name").value("Laptop"))
