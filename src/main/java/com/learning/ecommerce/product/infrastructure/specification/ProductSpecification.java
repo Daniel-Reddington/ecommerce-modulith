@@ -6,8 +6,15 @@ import org.springframework.data.jpa.domain.Specification;
 public class ProductSpecification {
 
     public static Specification<ProductEntity> nameContains(String name) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+
+        return (root, query, criteriaBuilder) -> {
+            if (name == null || name.isBlank()) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder
+                    .like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%");
+
+        };
     }
 
     public static Specification<ProductEntity> priceBetween(Double min, Double max) {
