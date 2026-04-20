@@ -12,15 +12,15 @@ import static org.mockito.Mockito.*;
 
 class CreateProductUseCaseTest {
 
+    private final ProductRepository repository = mock(ProductRepository.class);
+    private final CreateProductUseCase useCase = new CreateProductUseCase(repository);
+
     @Test
     void should_create_and_save_product_successfully() {
 
-        ProductRepository repository = mock(ProductRepository.class);
 
         when(repository.save(any(Product.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-
-        CreateProductUseCase useCase = new CreateProductUseCase(repository);
 
         Product result = useCase.execute("Laptop", 1000.0);
 
@@ -34,8 +34,6 @@ class CreateProductUseCaseTest {
     @Test
     void should_not_save_when_name_is_empty() {
 
-        ProductRepository repository = mock(ProductRepository.class);
-        CreateProductUseCase useCase = new CreateProductUseCase(repository);
 
         assertThrows(InvalidProductNameException.class, () ->
                 useCase.execute("", 1000.0)
@@ -47,8 +45,6 @@ class CreateProductUseCaseTest {
     @Test
     void should_not_save_when_price_is_invalid() {
 
-        ProductRepository repository = mock(ProductRepository.class);
-        CreateProductUseCase useCase = new CreateProductUseCase(repository);
 
         assertThrows(InvalidProductPriceException.class, () ->
                 useCase.execute("Laptop", -10.0)

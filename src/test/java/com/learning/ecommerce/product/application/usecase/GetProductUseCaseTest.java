@@ -13,10 +13,11 @@ import static org.mockito.Mockito.*;
 
 public class GetProductUseCaseTest {
 
+    private final ProductRepository repository = mock(ProductRepository.class);
+    private final GetProductUseCase useCase = new GetProductUseCase(repository);
+
     @Test
      void should_return_product_when_found(){
-
-        ProductRepository repository = mock(ProductRepository.class);
 
         UUID id = UUID.randomUUID();
 
@@ -24,9 +25,7 @@ public class GetProductUseCaseTest {
 
         when(repository.findById(id)).thenReturn(Optional.of(product));
 
-        GetProductUseCase getProductUseCase = new GetProductUseCase(repository);
-
-        Product result =  getProductUseCase.execute(id);
+        Product result =  useCase.execute(id);
 
         assertNotNull(result);
 
@@ -39,9 +38,6 @@ public class GetProductUseCaseTest {
 
     @Test
      void should_throw_exception_when_product_not_found(){
-        ProductRepository repository = mock(ProductRepository.class);
-
-        GetProductUseCase useCase = new GetProductUseCase(repository);
 
         UUID id = UUID.randomUUID();
         when(repository.findById(id)).thenReturn(Optional.empty());

@@ -11,11 +11,11 @@ import static org.mockito.Mockito.*;
 
 public class GetAllProductUseCaseTest {
 
+    private final ProductRepository repository = mock(ProductRepository.class);
+    private final GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
+
     @Test
      void should_get_products_with_pagination(){
-        ProductRepository repository = mock(ProductRepository.class);
-
-        GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
 
         List<Product> products = List.of(
                 Product.create("Laptop", 1000D),
@@ -34,8 +34,6 @@ public class GetAllProductUseCaseTest {
 
     @Test
      void should_return_empty_list_when_no_products(){
-        ProductRepository repository = mock(ProductRepository.class);
-        GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
 
         when(repository.findAll(0,10)).thenReturn(List.of());
 
@@ -47,8 +45,6 @@ public class GetAllProductUseCaseTest {
 
     @Test
     void should_filter_product_by_name(){
-        ProductRepository repository = mock(ProductRepository.class);
-        GetAllProductsUseCase useCase = new GetAllProductsUseCase(repository);
 
         List<Product> products = List.of(
                 Product.create("Laptop", 1000.0)
