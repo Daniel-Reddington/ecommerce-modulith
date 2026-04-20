@@ -1,5 +1,6 @@
 package com.learning.ecommerce.product.application.usecase;
 
+import com.learning.ecommerce.product.application.filter.ProductFilter;
 import com.learning.ecommerce.product.application.port.ProductRepository;
 import com.learning.ecommerce.product.domain.model.Product;
 import org.junit.jupiter.api.Test;
@@ -22,25 +23,29 @@ public class GetAllProductUseCaseTest {
                 Product.create("Samsung Galaxy", 2000D)
         );
 
-        when(repository.findAll(0,10)).thenReturn(products);
+        ProductFilter filter = new ProductFilter(0, 10, null, null, null);
 
-        List<Product> results = useCase.execute(0,10);
+        when(repository.findAll(filter)).thenReturn(products);
+
+        List<Product> results = useCase.execute(filter);
 
         assertEquals(2, results.size());
         assertEquals("Laptop", results.getFirst().name());
 
-        verify(repository).findAll(0,10);
+        verify(repository).findAll(filter);
     }
 
     @Test
      void should_return_empty_list_when_no_products(){
 
-        when(repository.findAll(0,10)).thenReturn(List.of());
+        ProductFilter filter = new ProductFilter(0, 10, null, null, null);
 
-        List<Product> results = useCase.execute(0,10);
+        when(repository.findAll(filter)).thenReturn(List.of());
+
+        List<Product> results = useCase.execute(filter);
 
         assertTrue(results.isEmpty());
-        verify(repository).findAll(0,10);
+        verify(repository).findAll(filter);
     }
 
     @Test
@@ -50,12 +55,13 @@ public class GetAllProductUseCaseTest {
                 Product.create("Laptop", 1000.0)
         );
 
-        when(repository.search(0,10, "Lap", 400.0, 1100.0)).thenReturn(products);
+        ProductFilter filter = new ProductFilter(0,10, "Lap", 400.0, 1100.0);
+        when(repository.findAll(filter)).thenReturn(products);
 
-        List<Product> results = useCase.execute(0,10, "Lap", 400.0, 1100.0);
+        List<Product> results = useCase.execute(filter);
 
         assertEquals(1, results.size());
         assertEquals("Laptop", results.getFirst().name());
-        verify(repository).search(0,10, "Lap", 400.0, 1100.0);
+        verify(repository).findAll(filter);
     }
 }

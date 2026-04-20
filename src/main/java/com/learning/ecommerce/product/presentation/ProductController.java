@@ -1,5 +1,6 @@
 package com.learning.ecommerce.product.presentation;
 
+import com.learning.ecommerce.product.application.filter.ProductFilter;
 import com.learning.ecommerce.product.application.usecase.CreateProductUseCase;
 import com.learning.ecommerce.product.application.usecase.GetAllProductsUseCase;
 import com.learning.ecommerce.product.application.usecase.GetProductUseCase;
@@ -41,8 +42,11 @@ public class ProductController {
             @RequestParam(required = false) Double minPrice,
             @RequestParam(required = false) Double maxPrice
     ){
+
+        ProductFilter filter = new ProductFilter(page, size, name, minPrice, maxPrice);
+
         List<ProductResponse> products = getAllProductsUseCase
-                .execute(page, size, name, minPrice, maxPrice)
+                .execute(filter)
                 .stream()
                 .map(mapper::toResponse)
                 .toList();

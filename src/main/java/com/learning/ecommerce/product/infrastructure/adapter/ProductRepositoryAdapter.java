@@ -1,5 +1,6 @@
 package com.learning.ecommerce.product.infrastructure.adapter;
 
+import com.learning.ecommerce.product.application.filter.ProductFilter;
 import com.learning.ecommerce.product.application.port.ProductRepository;
 import com.learning.ecommerce.product.domain.model.Product;
 import com.learning.ecommerce.product.domain.model.ProductId;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -53,22 +55,14 @@ public class ProductRepositoryAdapter implements ProductRepository {
 
 
     @Override
-    public List<Product> search(int page, int size, String  name, Double minPrice, Double maxPrice) {
-        Pageable pageable = PageRequest.of(page, size);
+    public List<Product> findAll(ProductFilter filter) {
+        Pageable pageable = PageRequest.of(filter.page(), filter.size());
 
         Specification<ProductEntity> spec = Specification
-                .where(ProductSpecification.nameContains(name))
-                .and(ProductSpecification.priceBetween(minPrice, maxPrice));
+                .where(ProductSpecification.nameContains(filter.name()))
+                .and(ProductSpecification.priceBetween(filter.minPrice(), filter.maxPrice()));
 
         Page<ProductEntity> results = jpaRepository.findAll(spec, pageable);
-
-        return results.stream().map(mapper::toDomain).toList();
-    }
-
-    @Override
-    public List<Product> findAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<ProductEntity> results = jpaRepository.findAll(pageable);
 
         return results.stream().map(mapper::toDomain).toList();
     }

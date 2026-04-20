@@ -1,5 +1,6 @@
 package com.learning.ecommerce.product.presentation;
 
+import com.learning.ecommerce.product.application.filter.ProductFilter;
 import com.learning.ecommerce.product.application.usecase.CreateProductUseCase;
 import com.learning.ecommerce.product.application.usecase.GetAllProductsUseCase;
 import com.learning.ecommerce.product.application.usecase.GetProductUseCase;
@@ -77,7 +78,9 @@ public class ProductControllerTest {
                 Product.create("Phone", 500.0)
         );
 
-        when(getAllProductsUseCase.execute(0,10)).thenReturn(products);
+        ProductFilter filter = new ProductFilter(0, 10, null, null, null);
+        when(getAllProductsUseCase.execute(filter)).thenReturn(products);
+
         when(productMapper.toResponse(any(Product.class))).thenAnswer(invocation -> {
             Product product = invocation.getArgument(0);
             return new ProductResponse(
@@ -155,7 +158,8 @@ public class ProductControllerTest {
                 Product.create("Laptop", 1000.0)
         );
 
-        when(getAllProductsUseCase.execute(0,10, "Lap", null, null)).thenReturn(products);
+        ProductFilter filter = new ProductFilter(0, 10,"Lap", null, null);
+        when(getAllProductsUseCase.execute(filter)).thenReturn(products);
 
         when(productMapper.toResponse(any(Product.class))).thenAnswer(invocation -> {
             Product product = invocation.getArgument(0);
