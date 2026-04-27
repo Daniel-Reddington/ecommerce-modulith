@@ -11,6 +11,8 @@ import com.learning.ecommerce.product.presentation.mapper.ProductMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -78,8 +80,10 @@ public class ProductControllerTest {
                 Product.create("Phone", 500.0)
         );
 
+        Page<Product> pageResult = new PageImpl<>(products);
+
         ProductFilter filter = new ProductFilter(0, 10, null, null, null);
-        when(getAllProductsUseCase.execute(filter)).thenReturn(products);
+        when(getAllProductsUseCase.execute(filter)).thenReturn(pageResult);
 
         when(productMapper.toResponse(any(Product.class))).thenAnswer(invocation -> {
             Product product = invocation.getArgument(0);
@@ -158,8 +162,10 @@ public class ProductControllerTest {
                 Product.create("Laptop", 1000.0)
         );
 
+        Page<Product> pageResult = new PageImpl<>(products);
+
         ProductFilter filter = new ProductFilter(0, 10,"Lap", null, null);
-        when(getAllProductsUseCase.execute(filter)).thenReturn(products);
+        when(getAllProductsUseCase.execute(filter)).thenReturn(pageResult);
 
         when(productMapper.toResponse(any(Product.class))).thenAnswer(invocation -> {
             Product product = invocation.getArgument(0);

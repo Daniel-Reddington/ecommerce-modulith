@@ -40,22 +40,18 @@ public class ProductRepositoryAdapter implements ProductRepository {
 
         ProductEntity saved = jpaRepository.save(productEntity);
 
-        return new Product(
-                new ProductId(saved.getId()),
-                saved.getName(),
-                saved.getPrice()
-        );
+        return mapper.toDomain(saved);
     }
 
     @Override
     public Optional<Product> findById(UUID id) {
-        return Optional.empty();
+        return jpaRepository.findById(id).map(mapper::toDomain);
     }
 
 
 
     @Override
-    public List<Product> findAll(ProductFilter filter) {
+    public Page<Product> findAll(ProductFilter filter) {
         Pageable pageable = PageRequest.of(filter.page(), filter.size());
 
         Specification<ProductEntity> spec = Specification
@@ -64,7 +60,7 @@ public class ProductRepositoryAdapter implements ProductRepository {
 
         Page<ProductEntity> results = jpaRepository.findAll(spec, pageable);
 
-        return results.stream().map(mapper::toDomain).toList();
+        return results.map(mapper::toDomain);
     }
 
 }

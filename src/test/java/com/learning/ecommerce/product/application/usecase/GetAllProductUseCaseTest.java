@@ -4,6 +4,8 @@ import com.learning.ecommerce.product.application.filter.ProductFilter;
 import com.learning.ecommerce.product.application.port.ProductRepository;
 import com.learning.ecommerce.product.domain.model.Product;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
@@ -23,14 +25,16 @@ public class GetAllProductUseCaseTest {
                 Product.create("Samsung Galaxy", 2000D)
         );
 
+        Page<Product> pageResult = new PageImpl<>(products);
+
         ProductFilter filter = new ProductFilter(0, 10, null, null, null);
 
-        when(repository.findAll(filter)).thenReturn(products);
+        when(repository.findAll(filter)).thenReturn(pageResult);
 
-        List<Product> results = useCase.execute(filter);
+        Page<Product> results = useCase.execute(filter);
 
-        assertEquals(2, results.size());
-        assertEquals("Laptop", results.getFirst().name());
+        assertEquals(2, results.getTotalElements());
+        assertEquals("Laptop", results.getContent().getFirst().name());
 
         verify(repository).findAll(filter);
     }
@@ -40,9 +44,9 @@ public class GetAllProductUseCaseTest {
 
         ProductFilter filter = new ProductFilter(0, 10, null, null, null);
 
-        when(repository.findAll(filter)).thenReturn(List.of());
+        when(repository.findAll(filter)).thenReturn(Page.empty());
 
-        List<Product> results = useCase.execute(filter);
+        Page<Product> results = useCase.execute(filter);
 
         assertTrue(results.isEmpty());
         verify(repository).findAll(filter);
@@ -55,13 +59,15 @@ public class GetAllProductUseCaseTest {
                 Product.create("Laptop", 1000.0)
         );
 
+        Page<Product> pageResult = new PageImpl<>(products);
+
         ProductFilter filter = new ProductFilter(0,10, "Lap", 400.0, 1100.0);
-        when(repository.findAll(filter)).thenReturn(products);
+        when(repository.findAll(filter)).thenReturn(pageResult);
 
-        List<Product> results = useCase.execute(filter);
+        Page<Product> results = useCase.execute(filter);
 
-        assertEquals(1, results.size());
-        assertEquals("Laptop", results.getFirst().name());
+        assertEquals(1, results.getTotalElements());
+        assertEquals("Laptop", results.getContent().getFirst().name());
         verify(repository).findAll(filter);
     }
 }

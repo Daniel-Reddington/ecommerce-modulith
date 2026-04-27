@@ -11,6 +11,7 @@ import com.learning.ecommerce.product.presentation.mapper.ProductMapper;
 import com.learning.ecommerce.shared.response.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public ApiResponse<List<ProductResponse>> getAll(
+    public ApiResponse<Page<ProductResponse>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String name,
@@ -45,11 +46,9 @@ public class ProductController {
 
         ProductFilter filter = new ProductFilter(page, size, name, minPrice, maxPrice);
 
-        List<ProductResponse> products = getAllProductsUseCase
+        Page<ProductResponse> products = getAllProductsUseCase
                 .execute(filter)
-                .stream()
-                .map(mapper::toResponse)
-                .toList();
+                .map(mapper::toResponse);
         return ApiResponse.ok(products);
     }
 
