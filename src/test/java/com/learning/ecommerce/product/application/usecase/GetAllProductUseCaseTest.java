@@ -2,6 +2,7 @@ package com.learning.ecommerce.product.application.usecase;
 
 import com.learning.ecommerce.product.application.filter.ProductFilter;
 import com.learning.ecommerce.product.application.port.ProductRepository;
+import com.learning.ecommerce.product.application.query.ProductQuery;
 import com.learning.ecommerce.product.domain.model.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -29,9 +30,11 @@ public class GetAllProductUseCaseTest {
 
         ProductFilter filter = new ProductFilter(0, 10, null, null, null);
 
+        ProductQuery query = new ProductQuery(filter);
+
         when(repository.findAll(filter)).thenReturn(pageResult);
 
-        Page<Product> results = useCase.execute(filter);
+        Page<Product> results = useCase.execute(query);
 
         assertEquals(2, results.getTotalElements());
         assertEquals("Laptop", results.getContent().getFirst().name());
@@ -44,9 +47,11 @@ public class GetAllProductUseCaseTest {
 
         ProductFilter filter = new ProductFilter(0, 10, null, null, null);
 
+        ProductQuery query = new ProductQuery(filter);
+
         when(repository.findAll(filter)).thenReturn(Page.empty());
 
-        Page<Product> results = useCase.execute(filter);
+        Page<Product> results = useCase.execute(query);
 
         assertTrue(results.isEmpty());
         verify(repository).findAll(filter);
@@ -64,7 +69,9 @@ public class GetAllProductUseCaseTest {
         ProductFilter filter = new ProductFilter(0,10, "Lap", 400.0, 1100.0);
         when(repository.findAll(filter)).thenReturn(pageResult);
 
-        Page<Product> results = useCase.execute(filter);
+        ProductQuery query = new ProductQuery(filter);
+
+        Page<Product> results = useCase.execute(query);
 
         assertEquals(1, results.getTotalElements());
         assertEquals("Laptop", results.getContent().getFirst().name());
