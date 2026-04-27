@@ -12,6 +12,8 @@ import com.learning.ecommerce.product.presentation.dto.ProductSearchRequest;
 import com.learning.ecommerce.product.presentation.mapper.ProductMapper;
 import com.learning.ecommerce.product.presentation.mapper.ProductQueryMapper;
 import com.learning.ecommerce.shared.response.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Products", description = "Product management APIs")
 @RestController()
 @RequestMapping("/products")
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class ProductController {
     private final GetAllProductsUseCase getAllProductsUseCase;
     private final ProductMapper mapper;
 
+    @Operation(summary = "Create Product")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<ProductResponse> create(@Valid @RequestBody CreateProductRequest request){
@@ -38,8 +42,9 @@ public class ProductController {
         return ApiResponse.created(mapper.toResponse(product));
     }
 
+    @Operation(summary = "Get all products with filter")
     @GetMapping
-    public ApiResponse<Page<ProductResponse>> getAll(@Valid ProductSearchRequest request){
+    public ApiResponse<Page<ProductResponse>> getAll(@ModelAttribute @Valid ProductSearchRequest request){
 
         ProductQuery query = ProductQueryMapper.toQuery(request);
 
@@ -50,6 +55,7 @@ public class ProductController {
         return ApiResponse.ok(products);
     }
 
+    @Operation(summary = "Get specific product by Id")
     @GetMapping("/{id}")
      public ApiResponse<ProductResponse> getById(@PathVariable UUID id){
         Product product = getProductUseCase.execute(id);
