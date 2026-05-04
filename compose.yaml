@@ -1,14 +1,43 @@
+version: '3.8'
+
 services:
+
   mysql:
-    image: 'mysql:latest'
+    image: 'mysql:8'
+    container_name: 'mysql-db'
+    restart: always
     environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce
     ports:
-      - '3306'
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
   redis:
     image: 'redis:latest'
+    container_name: redis-cache
+    restart: always
     ports:
-      - '6379'
+      - "6379:6379"
+    networks:
+      - app-network
+
+  app:
+    build: .
+    container_name: ecommerce-app
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+    env_file:
+      - docker/.env
+    networks:
+      - app-network
+
+volumes:
+  mysql_data:
+networks:
+  app-network:
