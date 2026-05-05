@@ -17,6 +17,9 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENV JAVA_OPTS=""
+# Configuration par défaut pour Docker (peut être surchargée par les variables d'environnement)
+ENV JAVA_OPTS="-Xmx256m -XX:+UseG1GC -XX:MaxGCPauseMillis=200"
+ENV SPRING_PROFILES_ACTIVE="${SPRING_PROFILES_ACTIVE:-docker}"
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# Script d'entrée avec support des variables d'environnement
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE:-docker} -jar app.jar"]
