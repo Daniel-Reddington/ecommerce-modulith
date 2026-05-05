@@ -2,8 +2,8 @@ spring:
   modulith:
     events:
       jdbc:
-        schema:
-          initialize: true
+        schema-initialization:
+          enabled: true
 
   datasource:
     url: ${DB_URL}
